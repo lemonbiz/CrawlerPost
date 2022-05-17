@@ -17,25 +17,25 @@ class SichuangovernmentserviceproSpider(scrapy.Spider):
 
     def start_requests(self):
         url = "http://sc.tzxm.gov.cn/showinformation"
-
-        yield scrapy.FormRequest(
-            url=url,
-            formdata={
-                "pageNo": "1",
-                "tabType": "",
-                "tinsBusinessinfo.projectname": "",
-                "ywstatus_value": "",
-                "starttime": "",
-                "endtime": "",
-            },
-            callback=self.parse,
-            meta={
-                "site_path_url": deepcopy(self.start_urls[0]),
-                "site_path_name": deepcopy("信息公开>投资项目办理结果公示"),
-                "site_id": deepcopy("7829271EA0"),
-            },
-            dont_filter=True,
-        )
+        for i in range(1,200):
+            yield scrapy.FormRequest(
+                url=url,
+                formdata={
+                    "pageNo": str(i),
+                    "tabType": "",
+                    "tinsBusinessinfo.projectname": "",
+                    "ywstatus_value": "",
+                    "starttime": "",
+                    "endtime": "",
+                },
+                callback=self.parse,
+                meta={
+                    "site_path_url": deepcopy(self.start_urls[0]),
+                    "site_path_name": deepcopy("信息公开>投资项目办理结果公示"),
+                    "site_id": deepcopy("7829271EA0"),
+                },
+                dont_filter=True,
+            )
 
         # for i in range(1,193):
         #     yield scrapy.FormRequest(
@@ -79,3 +79,13 @@ class SichuangovernmentserviceproSpider(scrapy.Spider):
             item["content_html"] = res.xpath("//*[@class='t4_xm_table t4_bszn2_table']").get()
 
             yield item
+
+
+if __name__ == '__main__':
+    import sys
+    import os
+    from scrapy import cmdline
+
+    file_name = os.path.basename(sys.argv[0])
+    file_name = file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])

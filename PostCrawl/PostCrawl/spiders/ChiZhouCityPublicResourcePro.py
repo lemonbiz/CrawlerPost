@@ -10,6 +10,8 @@ import jsonpath
 import scrapy
 from scrapy.http import JsonRequest
 
+from PostCrawl.utils.data_get import GetData
+
 
 class ChizhoucitypublicresourceproSpider(scrapy.Spider):
     name = 'ChiZhouCityPublicResourcePro'
@@ -29,30 +31,36 @@ class ChizhoucitypublicresourceproSpider(scrapy.Spider):
         payload = {
             "filter": {"date": "", "regionCode": "", "tenderProjectType": "", "tenderMode": ""},
             "page": str(i),
-            "rows": "100",
+            "rows": "10",
             "searchKey": "",
         }
         return payload
 
     def start_requests(self):
-        # 1,2,3,4.... 对应的是start_urls
-        yield from self.Request_data(self.start_urls[0], site_path_name="首页>交易信息>建设工程>招标公告", site_id="AA377B7148")
-        yield from self.Request_data(self.start_urls[1], site_path_name="首页>交易信息>建设工程>中标结果公示", site_id="2E9B0C67BD")
-        yield from self.Request_data(self.start_urls[2], site_path_name="首页 > 交易信息 > 政府采购 > 采购公告", site_id="1A4FE895AF")
-        yield from self.Request_data(self.start_urls[3], site_path_name="网站首页 > 交易信息 > 土地矿权 > 出让公告",
-                                     site_id="E12F72EAF0")
+        # # 1,2,3,4.... 对应的是start_urls
+        yield from self.Request_data(self.start_urls[0], site_path_name="首页>交易信息>建设工程>招标公告", site_id="AA377B7148",
+                                     call_back=self.parse)
 
-        yield from self.Request_data(self.start_urls[4], site_path_name="首页 > 交易信息 > 产权交易 > 交易公告", site_id="C9BF9DE798")
-        yield from self.Request_data(self.start_urls[5], site_path_name="首页 > 交易信息 > 其他交易 > 项目登记", site_id="E3FFEACF3D")
+        yield from self.Request_data(self.start_urls[1], site_path_name="首页>交易信息>建设工程>中标结果公示", site_id="2E9B0C67BD",
+                                     call_back=self.parse)
+        yield from self.Request_data(self.start_urls[2], site_path_name="首页 > 交易信息 > 政府采购 > 采购公告", site_id="1A4FE895AF",
+                                     call_back=self.parse)
+        yield from self.Request_data(self.start_urls[3], site_path_name="网站首页 > 交易信息 > 土地矿权 > 出让公告",
+                                     site_id="E12F72EAF0", call_back=self.parse)
+
+        yield from self.Request_data(self.start_urls[4], site_path_name="首页 > 交易信息 > 产权交易 > 交易公告", site_id="C9BF9DE798",
+                                     call_back=self.parse)
+        yield from self.Request_data(self.start_urls[5], site_path_name="首页 > 交易信息 > 其他交易 > 项目登记", site_id="E3FFEACF3D",
+                                     call_back=self.parse_1)
 
         yield from self.Request_data(self.start_urls[6], site_path_name="首页 > 交易信息 > 其他交易 > 招标（采购）公告",
-                                     site_id="8236EC8C12")
+                                     site_id="8236EC8C12", call_back=self.parse)
 
-    def Request_data(self, site_path_url, site_path_name, site_id):
+    def Request_data(self, site_path_url, site_path_name, site_id, call_back):
         yield JsonRequest(
             url=site_path_url,
             data=self.payload("1"),
-            callback=self.parse,
+            callback=call_back,
             meta={
                 "site_path_url": deepcopy(site_path_url),
                 "site_path_name": deepcopy(site_path_name),
@@ -62,42 +70,29 @@ class ChizhoucitypublicresourceproSpider(scrapy.Spider):
         )
 
     def parse(self, response, **kwargs):
-        item = {}
-        # 转换为json格式
-        json_text = json.loads(response.text)
-        # 用jsonpath 提取
-        id_list = jsonpath.jsonpath(json_text, '$..id')
-        date_list = jsonpath.jsonpath(json_text, '$..publishTime')
-        title_name_list = jsonpath.jsonpath(json_text, '$..tenderProjectName')
-        # 用zip函数遍历数据
-        for id1, date, title_name in zip(id_list, date_list, title_name_list):
+        html = response.json()
+        for data in html['rows']:
+            item = GetData().data_get(response)
+            id1 = data["id"]
+            item['title_url'] = f'{item["site_path_url"]}/{id1}'
+            item['title_name'] = data['title']
+            item['title_date'] = data['publishTime']
 
-            if response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005001002":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005001002/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005001004":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005001004/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005002002":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005002002/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005002003":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005002003/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005002012":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005002012/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005003001":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005003001/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005003003":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005003003/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005004001":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/bidcontent/9005004001/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/project/9005007008?tradeType=7&projectType=1":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/project/9005007008/{id1}'
-            elif response.url == "http://ggj.chizhou.gov.cn/front/bidcontent/9005007001":
-                item['title_url'] = f'http://ggj.chizhou.gov.cn/front/project/9005007001/{id1}'
+            yield scrapy.Request(
+                url=item['title_url'],
+                callback=self.parse_detail,
+                meta={'item': deepcopy(item)},
+            )
 
-            item['title_name'] = str(title_name)
-            item['title_date'] = str(date)
-            item['site_path_url'] = response.meta.get("site_path_url")
-            item['site_id'] = response.meta.get("site_id")
-            item['site_path_name'] = response.meta.get("site_path_name")
+    def parse_1(self, response):
+        html = response.json()
+        for data in html['rows']:
+            item = GetData().data_get(response)
+            id1 = data["id"]
+            item['title_url'] = f'http://ggj.chizhou.gov.cn/front/project/9005007008/{id1}'
+
+            item['title_name'] = data['tenderProjectName']
+            item['title_date'] = data['publishTime']
 
             yield scrapy.Request(
                 url=item['title_url'],
@@ -109,3 +104,13 @@ class ChizhoucitypublicresourceproSpider(scrapy.Spider):
         item = response.meta['item']
         item["content_html"] = response.xpath('//*[@id="printPanel"]').extract_first()
         yield item
+
+
+if __name__ == '__main__':
+    import sys
+    import os
+    from scrapy import cmdline
+
+    file_name = os.path.basename(sys.argv[0])
+    file_name = file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])

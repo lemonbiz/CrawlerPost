@@ -75,5 +75,12 @@ class TonglinyousemetalOldproSpider(scrapy.Spider):
     def parse_detail(self,response):
         item =response.meta['item']
         item['content_html'] = response.css(".main.clearfix").get()
-        print(item['site_path_url'],item['site_path_name'],item['title_url'])
         yield item
+
+if __name__ == '__main__':
+    import sys
+    import os
+    from scrapy import cmdline
+    file_name = os.path.basename(sys.argv[0])
+    file_name=file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])

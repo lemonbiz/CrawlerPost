@@ -69,35 +69,30 @@ class PostcrawlDownloaderMiddleware:
         return s
 
     def process_request(self, request, spider):
-        # Called for each request that goes through the downloader
-        # middleware.
+        # 'http': 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020',
 
-        # Must either:
-        # - return None: continue processing this request
-        # - or return a Response object
-        # - or return a Request object
-        # - or raise IgnoreRequest: process_exception() methods of
-        #   installed downloader middleware will be called
-        return None
+        # request.meta['proxy'] = 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020'
+        #
+        return
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
-
+        #
         # Must either;
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
         return response
 
+    # 判断请求协议头
+    # 拦截的是发生异常的请求对象
     def process_exception(self, request, exception, spider):
-        # Called when a download handler or a process_request()
-        # (from other downloader middleware) raises an exception.
-
-        # Must either:
-        # - return None: continue processing this exception
-        # - return a Response object: stops process_exception() chain
-        # - return a Request object: stops process_exception() chain
         pass
+        # # 设置代理ip
+        # if request.url.split(':')[0] == 'http':
+        #     request.meta['proxy'] = 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020'
+        # else:
+        #     request.meta['proxy'] = 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020'
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)

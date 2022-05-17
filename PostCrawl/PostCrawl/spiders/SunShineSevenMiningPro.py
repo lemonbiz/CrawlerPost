@@ -133,3 +133,10 @@ class SunshinesevenminingproSpider(scrapy.Spider):
 
         yield item
 
+if __name__ == '__main__':
+    import sys
+    import os
+    from scrapy import cmdline
+    file_name = os.path.basename(sys.argv[0])
+    file_name=file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])

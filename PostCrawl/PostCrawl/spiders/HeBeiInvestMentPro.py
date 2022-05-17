@@ -6,6 +6,8 @@ import re
 
 import scrapy
 
+from PostCrawl.utils.data_get import GetData
+
 
 class HebeiinvestmentproSpider(scrapy.Spider):
     name = 'HeBeiInvestMentPro'
@@ -16,15 +18,17 @@ class HebeiinvestmentproSpider(scrapy.Spider):
     ]
 
     def start_requests(self):
-        for i in range(2):
-            channelID = 'A8FE5F40FFFFFFFFEB4F9270FFFFFFBF'
-            yield from self.handle_request(channelID, i, self.start_urls[1], site_id="9266C683CF")
-
-        for i in range(2):
+        for i in range(1):
             channelID = '402881da5215a653015215be1eea033f'
-            yield from self.handle_request(channelID, i, self.start_urls[0], site_id="6C0F5C9316")
+            yield from self.handle_request(self.parse_pt,channelID, i, self.start_urls[0], site_id="6C0F5C9316",site_path_name="首页 > 政策法规")
 
-    def handle_request(self, channelID, i, site_path_url, site_id):
+        for i in range(1):
+            channelID = 'A8FE5F40FFFFFFFFEB4F9270FFFFFFBF'
+            yield from self.handle_request(self.parse,channelID, i, self.start_urls[1], site_id="9266C683CF",site_path_name="首页 > 平台动态")
+
+
+
+    def handle_request(self,callback, channelID, i, site_path_url, site_id,site_path_name):
         yield scrapy.FormRequest(
             url=site_path_url,
             formdata={
@@ -33,45 +37,51 @@ class HebeiinvestmentproSpider(scrapy.Spider):
                 'rows': '10',
                 'page': str(i + 1),
             },
-            callback=self.parse,
+            callback=callback,
             meta={
                 "site_path_url": copy.deepcopy(site_path_url),
                 "site_id": copy.deepcopy(site_id),
+                "site_path_name": copy.deepcopy(site_path_name),
             }
         )
 
-    def parse(self, response, **kwargs):
-        # pass
-        item = {}
-        title_ul = response.xpath('//*[@id="content"]/div/div[4]/ul/li')
-        url_id = response.xpath('//*[@id="content"]/div/div[4]/ul/li/a/@href').extract()
-        date_list = response.xpath('//*[@id="content"]/div/div[4]/ul/li')
 
-        for title, id, date in zip(title_ul, url_id, date_list):
-            content_id = re.findall(r"ptdtInfo\?channelID=A8FE5F40FFFFFFFFEB4F9270FFFFFFBF&contentID=(.*)", id)[0]
-            item['title_name'] = title.xpath('./a/text()').extract_first()
-            title_date = date.xpath('./span/text()').extract_first()
-            item['title_date'] = re.sub('\t\t', '', title_date).replace('\r\n', '')
+    def parse_pt(self,response):
+        for li in response.css(".ejlistwrap ul li"):
+            item = GetData().data_get(response)
 
-            item['title_url'] = 'http://tzxm.hbzwfw.gov.cn/sbglweb/ptdtInfoN?contentID={}'.format(content_id)
+            title_url:str = li.css("a::attr(href)").get()
+            item['title_url'] = "http://tzxm.hbzwfw.gov.cn/sbglweb/"+title_url
+            item['title_name'] = li.css("a::text").get()
+            item['title_date'] = li.css("span::text").get()
 
-            # 将目录地址 传值到管道中
-            item['site_path_url'] = response.meta.get('site_path_url')
+            content_id = title_url.split("contentID=")[1]
 
-            if response.url == self.start_urls[0]:
-                # 目录名
-                item["site_path_name"] = '首页 > 政策法规'
-            else:
-                item["site_path_name"] = '首页 > 平台动态'
-
-            item['site_id'] = response.meta.get('site_id')
-
+            true_url =f"http://tzxm.hbzwfw.gov.cn/sbglweb/ptdtInfoN?contentID={content_id}"
             yield scrapy.Request(
-                url=item['title_url'],
+                url=true_url,
                 callback=self.parse_detail,
                 meta={'item': copy.deepcopy(item)},
             )
 
+    def parse(self, response, **kwargs):
+
+        for li in response.css(".ejlistwrap ul li"):
+            item = GetData().data_get(response)
+
+            title_url: str = li.css("a::attr(href)").get()
+            item['title_url'] = "http://tzxm.hbzwfw.gov.cn/sbglweb/" + title_url
+            item['title_name'] = li.css("a::text").get()
+            item['title_date'] = li.css("span::text").get()
+
+            content_id = title_url.split("contentID=")[1]
+
+            true_url = f"http://tzxm.hbzwfw.gov.cn/sbglweb/ptdtInfoN?contentID={content_id}"
+            yield scrapy.Request(
+                url=true_url,
+                callback=self.parse_detail,
+                meta={'item': copy.deepcopy(item)},
+            )
     def parse_detail(self, response):
         item = response.meta['item']
         item['content_html'] = response.text
@@ -79,6 +89,11 @@ class HebeiinvestmentproSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
+    import sys
     import os
+    from scrapy import cmdline
 
-    os.system("scrapy crawl HeBeiInvestMentPro")
+    file_name = os.path.basename(sys.argv[0])
+    file_name = file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])
+

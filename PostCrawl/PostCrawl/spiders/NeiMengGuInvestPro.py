@@ -17,17 +17,44 @@ from PostCrawl.utils.data_get import GetData
 class NeimengguinvestproSpider(scrapy.Spider):
     name = 'NeiMengGuInvestPro'
     # allowed_domains = ['xxx.com']
-    start_urls = ['http://nmg.tzxm.gov.cn/tzsp/projectHandlePublicity.jspx']
+    start_urls = ['http://nmg.tzxm.gov.cn/tzsp/projectHandlePublicity.jspx',
+                  'http://nmg.tzxm.gov.cn/indexlink/xxgk.jspx?shareaId=150000&sareaId=150100',
+
+                  ]
 
     def start_requests(self):
-        for url in self.start_urls:
+        # for url in self.start_urls:
+        #     yield scrapy.Request(
+        #         url=url,
+        #         callback=self.parse,
+        #         meta={
+        #             "site_path_url": copy.deepcopy(self.start_urls[0]),
+        #             "site_path_name": copy.deepcopy("首页>项目办理结果公示"),
+        #             "site_id": copy.deepcopy("D6299B0755"),
+        #         }
+        #     )
+
+        # for url in [f'http://nmg.tzxm.gov.cn/indexlink/info/beforeApprove.jspx?pageNo={i}&areaid=150000&searchText=&deptId='for i in range(1,6)]:
+        # for url in ['http://nmg.tzxm.gov.cn/indexlink/info/beforeApprove.jspx?pageNo=1&areaid=150000&searchText=&deptId=']:
+        #     yield scrapy.Request(
+        #         url=url,
+        #         callback=self.parse_xxgk,
+        #         meta={
+        #             "site_path_url": copy.deepcopy(self.start_urls[1]),
+        #             "site_path_name": copy.deepcopy("首页>投资项目批前公示&投资项目批前公示"),
+        #             "site_id": copy.deepcopy("C7C8D7E1B6"),
+        #         }
+        #     )
+
+        # for url in [f'http://nmg.tzxm.gov.cn/indexlink/info/afterApprove.jspx?pageNo={i}&areaid=150000&searchText=&deptId=&start=&end='for i in range(1,118)]:
+        for url in ['http://nmg.tzxm.gov.cn/indexlink/info/afterApprove.jspx?pageNo=1&areaid=150000&searchText=&deptId=&start=&end=']:
             yield scrapy.Request(
                 url=url,
-                callback=self.parse,
+                callback=self.parse_xxgk_1,
                 meta={
-                    "site_path_url": copy.deepcopy(self.start_urls[0]),
-                    "site_path_name": copy.deepcopy("首页>项目办理结果公示"),
-                    "site_id": copy.deepcopy("D6299B0755"),
+                    "site_path_url": copy.deepcopy(self.start_urls[1]),
+                    "site_path_name": copy.deepcopy("首页>投资项目批前公示&投资项目批前公示"),
+                    "site_id": copy.deepcopy("C7C8D7E1B6"),
                 }
             )
 
@@ -71,7 +98,6 @@ class NeimengguinvestproSpider(scrapy.Spider):
                     "site_id": copy.deepcopy("D6299B0755"),
                 }
             )
-
     # 详情页解析
     def parse_detail(self,response):
         item=response.meta['item']
@@ -83,3 +109,35 @@ class NeimengguinvestproSpider(scrapy.Spider):
             item["title_date"] = time.strftime('%Y-%m-%d %H:%M:%S')
         yield item
 
+    def parse_xxgk(self,response):
+        for li in response.css("#table1 tr"):
+            item = GetData().data_get(response)
+            item["title_url"] = 'http://nmg.tzxm.gov.cn' + str(li.css('td a::attr(href)').get())
+            item["title_name"] = li.css('td a::text').get()
+            title_date:str = li.css('td:nth-child(4)::text').get()
+            if title_date is None:
+                continue
+            item["title_date"] = title_date.replace("\r\n","")
+            yield scrapy.Request(
+                url=item['title_url'],
+                callback=self.parse_detail_xxgk,
+                meta={'item': deepcopy(item)}
+            )
+
+    def parse_detail_xxgk(self,response):
+        item=response.meta['item']
+        item['content_html'] = response.css(".block_content.bmgk_pad").get()
+        yield item
+
+    def parse_xxgk_1(self,response):
+        for li in response.css("#table1 tr"):
+            item = GetData().data_get(response)
+            item["title_url"] = 'http://nmg.tzxm.gov.cn' + str(li.css('td:nth-child(1) a::attr(href)').get())
+            item["title_name"] = li.css('td:nth-child(5)::text').get()
+            title_date:str = li.css('td:nth-child(5)::text').get()
+            if title_date is None:
+                continue
+            item["title_date"] = title_date
+            item['content_html'] = "<html><body><div>请查看原文链接</div></body></html>"
+
+            yield item

@@ -6,6 +6,8 @@ import scrapy
 import ujson
 from scrapy.http import JsonRequest
 
+from PostCrawl.utils.data_get import GetData
+
 
 class AngangzhaobiaobussinessproSpider(scrapy.Spider):
     name = 'AnGangZhaoBiaoBussinessPro'
@@ -83,6 +85,5 @@ class AngangzhaobiaobussinessproSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
-    import os
-
-    os.system(f"scrapy crawl AnGangZhaoBiaoBussinessPro", )
+    gd = GetData()
+    gd.crawler_run()

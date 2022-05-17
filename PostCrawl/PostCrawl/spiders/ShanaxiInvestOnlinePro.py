@@ -26,7 +26,7 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
     ]
 
     def start_requests(self):
-        for i in range(1, 10):
+        for i in range(1, 2):
             yield scrapy.FormRequest(
                 url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=recordquery",
                 formdata={
@@ -40,7 +40,7 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
                 }
             )
 
-        for i in range(1, 10):
+        for i in range(1, 2):
             yield scrapy.FormRequest(
                 url="http://www.shanxitzxm.gov.cn/portalopenPublicInformation.do?method=queryExamineAll",
                 formdata={
@@ -54,60 +54,23 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
                     "site_id": copy.deepcopy("4ED6C2220E"),
                 }
             )
-        for i in range(1, 10):
-            yield scrapy.FormRequest(
-                url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=historyProjectQuerySx",
-                formdata={
-                    "condition": "",
-                    "pageNo": str(i),
-                },
-                callback=self.parse2,
-                meta={
-                    "site_path_url": copy.deepcopy(self.start_urls[2]),
-                    "site_id": copy.deepcopy("CDBA3B3C0C"),
 
-                }
-            )
 
-    # def start_requests(self):
-    #     for i in range(1, 4774):
-    #         yield scrapy.FormRequest(
-    #             url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=recordquery",
-    #             formdata={
-    #                 "condition": "",
-    #                 "pageNo": str(i),
-    #             },
-    #             callback=self.parse,
-    #             meta={
-    #                 "site_path_url":copy.deepcopy(self.start_urls[0])
-    #             }
-    #         )
-    #
-    #     for i in range(1, 11078):
-    #         yield scrapy.FormRequest(
-    #             url="http://www.shanxitzxm.gov.cn/portalopenPublicInformation.do?method=queryExamineAll",
-    #             formdata={
-    #                 "pageSize": "",
-    #                 "pageNo": str(i),
-    #                 "apply_project_name": "",
-    #             },
-    #             callback=self.parse1,
-    #             meta={
-    #                 "site_path_url": copy.deepcopy(self.start_urls[0])
-    #             }
-    #         )
-    #     for i in range(1, 6300):
-    #         yield scrapy.FormRequest(
-    #             url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=historyProjectQuerySx",
-    #             formdata={
-    #                 "condition": "",
-    #                 "pageNo": str(i),
-    #             },
-    #             callback=self.parse2,
-    #             meta={
-    #                 "site_path_url": copy.deepcopy(self.start_urls[0])
-    #             }
-    #         )
+        # for i in range(10, 500):
+        #     yield scrapy.FormRequest(
+        #         url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=historyProjectQuerySx",
+        #         formdata={
+        #             "condition": "",
+        #             "pageNo": str(i),
+        #         },
+        #         callback=self.parse2,
+        #         meta={
+        #             "site_path_url": copy.deepcopy(self.start_urls[2]),
+        #             "site_id": copy.deepcopy("CDBA3B3C0C"),
+        #
+        #         }
+        #     )
+
 
     def parse(self, response, **kwargs):
         """
@@ -174,9 +137,6 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
                 print(e)
 
     def parse2(self, response, **kwargs):
-        """
-               http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=recordContentQuery
-       """
         item = {}
         json_text = ujson.loads(response.text)
 
@@ -240,6 +200,9 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
+    import sys
     import os
-
-    os.system("scrapy crawl ShanaxiInvestOnlinePro")
+    from scrapy import cmdline
+    file_name = os.path.basename(sys.argv[0])
+    file_name=file_name.split(".")[0]
+    cmdline.execute(['scrapy', 'crawl', file_name])

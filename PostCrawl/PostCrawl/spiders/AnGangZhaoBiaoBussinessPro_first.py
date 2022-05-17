@@ -3,17 +3,14 @@
 鞍钢招标有限公司
 
 """
-import json
-import operator
-import re
 import time
 from copy import deepcopy
 import jsonpath
 import scrapy
-import ast
-from tqdm import tqdm
 import ujson
 from scrapy.http import JsonRequest
+
+from PostCrawl.utils.data_get import GetData
 
 
 class AngangzhaobiaobussinessproFirstSpider(scrapy.Spider):
@@ -91,3 +88,6 @@ class AngangzhaobiaobussinessproFirstSpider(scrapy.Spider):
         yield item
 
 
+if __name__ == '__main__':
+    gd = GetData()
+    gd.crawler_run()

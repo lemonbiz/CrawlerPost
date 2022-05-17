@@ -9,7 +9,6 @@ from typing import Optional
 
 from .api_manager.script_api import APIManager
 from .api_manager.script_data import SpiderData
-from itemadapter import ItemAdapter
 import httpx
 from loguru import logger
 import time
@@ -22,8 +21,7 @@ class PostcrawlPipeline:
         self.site_name: Optional[str] = None
         # 栏目名
         self.title_type: Optional[str] = None
-        # 目录名
-        self.site_id: Optional[str] = None
+
 
     def process_item(self, item, spider):
         # 鞍钢招标有限公司
@@ -36,7 +34,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 鞍钢集团电子招标投标交易平台
-        if spider.name == 'AnGangZhaoBiaoBussinessPro_first':
+        elif spider.name == 'AnGangZhaoBiaoBussinessPro_first':
             # 政府单位名
             self.site_name = '鞍钢集团电子招标投标交易平台'
             # 栏目名
@@ -45,7 +43,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 鞍钢招标有限公司商机|寻源
-        if spider.name == 'AnGangZhaoBiaoBussinessPro_Second':
+        elif spider.name == 'AnGangZhaoBiaoBussinessPro_Second':
             # 政府单位名
             self.site_name = '鞍钢招标有限公司商机|寻源'
             # 栏目名
@@ -54,7 +52,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 河北省投资项目在线审批监管平台
-        if spider.name == 'HeBeiInvestMentPro':
+        elif spider.name == 'HeBeiInvestMentPro':
             # 政府单位名
             self.site_name = '河北省投资项目在线审批监管平台'
             # 栏目名
@@ -63,7 +61,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 全国投资项目在线审批监管平台-山西省
-        if spider.name == 'ShanaxiInvestOnlinePro':
+        elif spider.name == 'ShanaxiInvestOnlinePro':
             # 政府单位名
             self.site_name = '全国投资项目在线审批监管平台-山西省'
             # 栏目名
@@ -72,7 +70,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 全国投资项目在线审批监管平台-山西省
-        if spider.name == 'ShanaXiInvestPro':
+        elif spider.name == 'ShanaXiInvestPro':
             # 政府单位名
             self.site_name = '全国投资项目在线审批监管平台-山西省'
             # 栏目名
@@ -81,7 +79,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 欧贝易购/上海宝华国际招标有限公司
-        if spider.name == 'ShangHaiBaoHuaBiddingBussiness':
+        elif spider.name == 'ShangHaiBaoHuaBiddingBussiness':
             # 政府单位名
             self.site_name = '欧贝易购/上海宝华国际招标有限公司'
             # 栏目名
@@ -90,7 +88,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 中国宝武采购专区/欧冶工业品
-        if spider.name == 'ShangHaiBaoWuBiddingBussiness':
+        elif spider.name == 'ShangHaiBaoWuBiddingBussiness':
             # 政府单位名
             self.site_name = '欧贝易购/上海宝华国际招标有限公司'
             # 栏目名
@@ -99,7 +97,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 欧冶工业品
-        if spider.name == 'ShangHaiOuYeBiddingBussiness':
+        elif spider.name == 'ShangHaiOuYeBiddingBussiness':
             # 政府单位名
             self.site_name = '欧冶工业品'
             # 栏目名
@@ -108,7 +106,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 山西省招标投标公共服务平台
-        if spider.name == 'ShanXiProvinceTenderingBiddingPro':
+        elif spider.name == 'ShanXiProvinceTenderingBiddingPro':
             # 政府单位名
             self.site_name = '山西省招标投标公共服务平台'
             # 栏目名
@@ -117,7 +115,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 马鞍山市公共资源交易网
-        if spider.name == 'MaAnShanCityPublicResourcePro':
+        elif spider.name == 'MaAnShanCityPublicResourcePro':
             # 政府单位名
             self.site_name = '马鞍山市公共资源交易网'
             # 栏目名
@@ -126,7 +124,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 池州市公共资源交易网
-        if spider.name == 'ChiZhouCityPublicResourcePro':
+        elif spider.name == 'ChiZhouCityPublicResourcePro':
             # 政府单位名
             self.site_name = '池州市公共资源交易网'
             # 栏目名
@@ -135,7 +133,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 铜化集团电子招标采购平台_优质采
-        if spider.name == 'TongLingElectronicBussiness':
+        elif spider.name == 'TongLingElectronicBussiness':
             # 政府单位名
             self.site_name = '铜化集团电子招标采购平台_优质采'
             # 栏目名
@@ -144,7 +142,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 铜陵有色集团电子采购（招投标）系统
-        if spider.name == 'TongLinYouSeMetalPro':
+        elif spider.name == 'TongLinYouSeMetalPro':
             # 政府单位名
             self.site_name = '铜陵有色集团电子采购（招投标）系统'
             # 栏目名
@@ -153,7 +151,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 中国招标投标公共服务平台
-        if spider.name == 'ChinaPublicServicePlatform':
+        elif spider.name == 'ChinaPublicServicePlatform':
             # 政府单位名
             self.site_name = '中国招标投标公共服务平台'
             # 栏目名
@@ -162,7 +160,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 	铜陵有色金属集团控股有限公司
-        if spider.name == 'TongLinYouSeMetal_oldPro':
+        elif spider.name == 'TongLinYouSeMetal_oldPro':
             # 政府单位名
             self.site_name = '铜陵有色金属集团控股有限公司'
             # 栏目名
@@ -171,7 +169,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # 	阳光七采·兵纷招采—中国兵器电子招标投标交易平台
-        if spider.name == 'SunShineSevenMiningPro':
+        elif spider.name == 'SunShineSevenMiningPro':
             # 政府单位名
             self.site_name = '阳光七采·兵纷招采—中国兵器电子招标投标交易平台'
             # 栏目名
@@ -180,7 +178,7 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # http://sc.tzxm.gov.cn/showinformation
-        if spider.name == 'SiChuanGovernmentservicePro':
+        elif spider.name == 'SiChuanGovernmentservicePro':
             # 政府单位名
             self.site_name = '全国投资项目在线审批监管平台-四川省'
             # 栏目名
@@ -189,9 +187,111 @@ class PostcrawlPipeline:
             self.currency(item=item, spider=spider)
 
         # http://nmg.tzxm.gov.cn/tzsp/projectHandlePublicity.jspx
-        if spider.name == 'NeiMengGuInvestPro':
+        elif spider.name == 'NeiMengGuInvestPro':
             # 政府单位名
             self.site_name = '内蒙古自治区投资项目在线审批办事大厅'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # https://tzxm.shaanxi.gov.cn/tzxmspweb/phgs
+        elif spider.name == 'ShanXiOnlineGovernPro':
+            # 政府单位名
+            self.site_name = '全国投资项目在线审批监管平台-陕西省'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+
+        # https://b2b.10086.cn/b2b/main/listVendorNotice.html?noticeType=2#this
+        elif spider.name == 'ChinaYiDongInvestPro':
+            # 政府单位名
+            self.site_name = '中国移动采购与招标网'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://tzxm.hubei.gov.cn/tzxmweb/pages/home/approvalResult/recordqueryNew.jsp
+        elif spider.name == 'HuBeiOnlineGovernPro':
+            # 政府单位名
+            self.site_name = '湖北省投资项目在线审批监管平台'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://www.qhtzxm.gov.cn/info/toListPage
+        elif spider.name == 'QingHaiOnlineInvestPro':
+            # 政府单位名
+            self.site_name = '青海省投资项目在线审批监管平台'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+
+        # https://gd.tzxm.gov.cn/PublicityInformation/PublicityHandlingResults.html#
+        elif spider.name == 'GuangDongOnlineInvestPro':
+            # 政府单位名
+            self.site_name = '全国投资项目在线审批监管平台-广东省'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # https://tzxm.drc.xizang.gov.cn:8008/report/publicInfo
+        elif spider.name == 'XiZangOnlineInvestPro':
+            # 政府单位名
+            self.site_name = '全国投资项目在线审批监管平台-西藏自治区'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://tzxm.jxzwfww.gov.cn/icity/ipro/open/publicity
+        elif spider.name == 'JiangXiOnlineInvestPro':
+            # 政府单位名
+            self.site_name = '江西省投资项目在线审批监管平台'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://ec.mcc.com.cn/logonAction.do
+        elif spider.name == 'ChinaMinmetalsCorportionFivePlatformIndexHome':
+            # 政府单位名
+            self.site_name = '中国五矿集团有限公司采购电子商务平台'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://110.249.223.65:8070
+        elif spider.name == 'HebeiProvinceEcologyEnvironmentPro':
+            # 政府单位名
+            self.site_name = '河北省生态环境厅行政许可网上审批平台'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+
+        # http://ggzy.ah.gov.cn
+        elif spider.name == 'AnHuiProvicePlatformPro':
+            # 政府单位名
+            self.site_name = '安徽省公共资源交易监管网'
+            # 栏目名
+            self.title_type = '拟在建项目'
+            #  # 调用API 并写入
+            self.currency(item=item, spider=spider)
+
+        # http://221.214.94.51:8081/icity/ipro/projectlist
+        elif spider.name == 'ShanDongProvinceBiddingSupervisionPro':
+            # 政府单位名
+            self.site_name = '全国投资项目在线审批监管平台-山东省'
             # 栏目名
             self.title_type = '拟在建项目'
             #  # 调用API 并写入

@@ -53,9 +53,7 @@ LOG_LEVEL = 'WARNING'
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'PostCrawl.middlewares.PostcrawlDownloaderMiddleware': 543,
-#}
+
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -100,7 +98,7 @@ SPIDER_MIDDLEWARES = {
 SPLASH_URL = 'http://192.168.2.55:8050'
 
 DOWNLOADER_MIDDLEWARES = {
-    
+    'PostCrawl.middlewares.PostcrawlDownloaderMiddleware': 543,
     'scrapy_splash.SplashCookiesMiddleware': 723,
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
@@ -109,3 +107,9 @@ DOWNLOADER_MIDDLEWARES = {
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 # 缓存
 HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
+
+
+COMMANDS_MODULE = "PostCrawl.commands"
+
+
+DOWNLOAD_FAIL_ON_DATALOSS = False
