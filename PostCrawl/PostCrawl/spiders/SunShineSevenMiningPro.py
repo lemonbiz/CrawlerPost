@@ -47,9 +47,11 @@ class SunshinesevenminingproSpider(scrapy.Spider):
                       'fbDateStart': '',
                       'fbDateEnd': '',
                       'radio': 'on',
-                      'ggyxq_time': str(ggyxq_time),
+                      'ggyxq_time': "2022-06-04 23:00:00",
+                      'ggyxq_time': "2022-06-07 17:00:00",
+                      'ggyxq_time': "2022-06-09 18:00:00",
                       'pageNumber': "1",
-                      'pageSize': '50',
+                      'pageSize': '10',
                       'sortColumns': 'undefined'},
             callback=self.parse,
             headers={

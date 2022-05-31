@@ -12,15 +12,33 @@ import time
 import re
 import datetime
 import hashlib
+import socket
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup, Comment
 
-from .keywords_valid import keywords_valid, keywords_base
+from Currency.api_manager.keywords import keywords_valid, keywords_search
 
 
 class SpiderData(object):
     def __init__(self):
         pass
+
+    def getApiIp(self):
+        local_ip = ""
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(('8.8.8.8', 80))
+            local_ip = s.getsockname()[0]
+            s.close()
+        except Exception as e:
+            print(e)
+            s.close()
+        if "192.168.2" in local_ip:
+            api_ip = "192.168.2.31"
+        else:
+            api_ip = "mykyls.xyz"
+        print("local_ip:", local_ip, "API IP: ", api_ip)
+        return api_ip
 
     def getSiteId(self, site_path_url):
         site_id = "-"
@@ -31,30 +49,28 @@ class SpiderData(object):
             print("getSiteIdMap error:", str(e))
         return site_id
 
-    def findBaseKeys(self, title_str):
+    def findValidKeyword(self, title_str):
         # 获取初选关键词
-        keys_list = list(set(keywords_base.split()))
+        keys_list = list(set(keywords_valid.split()))
         valid_keys = []
         for each_key in keys_list:
             if each_key in title_str:
                 valid_keys.append(each_key)
-        return valid_keys
+        return " ".join(valid_keys)
 
-    def findValidKeys(self, title_str):
+    def findSearchKeyword(self, title_str):
         # 获取查询关键词
-        keys_list = list(set(keywords_valid.split()))
+        keys_list = list(set(keywords_search.split()))
         valid_keys = []
         for each_key in keys_list:
             if each_key in title_str:
                 valid_keys.append(each_key)
         keywords = []
         for each_keys in valid_keys:
-            if len(each_keys) < 2 and each_keys not in ["铁", "矿"]:
-                continue
             if each_keys in keywords:
                 continue
             keywords.append(each_keys)
-        return keywords
+        return " ".join(keywords)
 
     def findPageTel(self, content):
         # 获取电话号码
@@ -197,8 +213,9 @@ class SpiderData(object):
                 if file_url in file_url_list:
                     continue
                 file_type_list = ["pdf", "doc", "docx", "xls", "xlsx", "zip", "rar",
-                                  "tar.gz", "ppt", "txt", "png", "exe", "jpg"]
-                if temp_name_type in file_type_list:
+                                  "tar.gz", "ppt", "txt", "png", "jpg"]
+                url_file_name = temp_url.split(".")[-1].strip().lower()
+                if temp_name_type in file_type_list or url_file_name in file_type_list:
                     file_url = self.getLinkUrl(page_url, temp_url)
                     if temp_url == file_url:
                         temp_url = ""
@@ -283,21 +300,16 @@ class SpiderData(object):
         else:
             title_data["file_status"] = 2
         # 关键词匹配
-        valid_keys = self.findValidKeys(title_data["title_name"] + title_data["content_text"])
-        keywords = []
-        for each_keys in valid_keys:
-            if len(each_keys) < 2 and each_keys not in ["铁", "矿"]:
-                continue
-            if each_keys in keywords:
-                continue
-            keywords.append(each_keys)
-        title_data["keywords"] = " ".join(keywords)
-        if keywords:
+        seach_str = title_data["title_name"] + title_data["content_text"]
+        valid_keys = self.findValidKeyword(seach_str)
+
+        # print("valid_keys:", valid_keys)
+
+        if valid_keys:
             title_data["importance"] = 2
-        if self.findBaseKeys(title_data["title_name"]):
-            title_data["importance"] = 3
         else:
             title_data["importance"] = 1
+        title_data["keywords"] = self.findSearchKeyword(seach_str)
         # 获取电话
         title_data["tel_text"] = self.findPageTel(title_data["content_text"])
         if title_data["content_html"]:

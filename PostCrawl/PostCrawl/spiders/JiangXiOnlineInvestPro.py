@@ -18,7 +18,7 @@ class JiangxionlineinvestproSpider(scrapy.Spider):
     start_urls = ['http://tzxm.jxzwfww.gov.cn/icity/ipro/open/publicity']
 
     def start_requests(self):
-        for i in range(1,500):
+        for i in range(1,10):
             yield scrapy.FormRequest(
                 url=f"http://tzxm.jxzwfww.gov.cn/icity/api-v2/jxtzxm.app.icity.ipro.IproCmd/getDisplayListByPage?s=c566831652436749556&t=6219_c75166_{int(time.time()*1000)}&o=657111",
                 formdata={
@@ -39,7 +39,7 @@ class JiangxionlineinvestproSpider(scrapy.Spider):
     def parse(self, response):
         tester = DataFormat()
         for data in response.json()['data']:
-            print(data)
+            # print(data)
             item = GetData().data_get(response)
             item['title_name'] = data['columns']['APPLY_SUBJECT']
             item['title_url'] = f"http://tzxm.jxzwfww.gov.cn/icity/ipro/open/publicity/{data['columns']['SEQ_ID']}"

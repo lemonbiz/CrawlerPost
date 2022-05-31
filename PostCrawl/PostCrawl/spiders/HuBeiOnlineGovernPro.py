@@ -73,21 +73,21 @@ class HubeionlinegovernproSpider(scrapy.Spider):
             )
 
 
-        # for i in range(1,1):
-        #     yield scrapy.FormRequest(
-        #         url="http://tzxm.hubei.gov.cn/portalopenPublicInformation.do?method=queryExamineAll",
-        #         callback=self.parse_Public,
-        #         formdata={
-        #             "pageSize": "10",
-        #             "pageNo": str(i),
-        #             "apply_project_name": "",
-        #         },
-        #         meta={
-        #             "site_path_url": deepcopy(self.start_urls[3]),
-        #             "site_path_name": deepcopy("信息公开>批后公开>批复公告"),
-        #             "site_id": deepcopy("4501E9BAA8"),
-        #         },
-        #     )
+        for i in range(1,100):
+            yield scrapy.FormRequest(
+                url="http://tzxm.hubei.gov.cn/portalopenPublicInformation.do?method=queryExamineAllNew&type=queryPublicresultNew.jsp",
+                callback=self.parse_Public,
+                formdata={
+                    "pageSize": "10",
+                    "pageNo": str(i),
+                    "apply_project_name": "",
+                },
+                meta={
+                    "site_path_url": deepcopy(self.start_urls[3]),
+                    "site_path_name": deepcopy("信息公开>批后公开>批复公告"),
+                    "site_id": deepcopy("4501E9BAA8"),
+                },
+            )
 
     def parse(self, response):
         for data in response.json()[0]['list']:
@@ -220,29 +220,15 @@ class HubeionlinegovernproSpider(scrapy.Spider):
             if item['title_name'] is None:
                 continue
             item["title_url"]=tr.css("td a::attr(onclick)").get()
+            if item['title_url'] is None:
+                item["title_url"]=tr.css("td:nth-child(1)::text").get()
+
             item["title_date"]=tr.css("td:last-child::text").get()
             item['content_html'] = "暂无数据"
 
             yield item
 
 
-        # for data in response.json()[0]['JSONObject']['rowSet']['primary']:
-        #     item = GetData().data_get(response)
-        #     item['title_name'] = data['apply_project_name']
-        #     item['title_date'] = data['start_date_tochar']
-        #     item['title_url'] = f"http://tzxm.hubei.gov.cn/tzxmweb/acceptancePublicityDetail.do?" \
-        #                         f"publicity_id={data['publicity_id']}&" \
-        #                         f"projectuuid={data['projectuuid']}" \
-        #                         f"&item_id={data['item_id']}" \
-        #                         f"&sendid={data['sendid']}"
-        #     # item['title_url'] = f"https://tzxm.shaanxi.gov.cn/tzxmspweb/api/admin/service/sbsp/apprtprojectinfo/selectApprtProjectInfoByDealState?pageSize=10&pageNo=1&search=2205-610721-04-01-262897"
-        #     tester = DataFormat()
-        #
-        #     # for k,v in data.items():
-        #
-        #     content_html = tester.dictToHtml(data)
-        #     item['content_html'] = content_html
-        #     yield item
 
 
 if __name__ == '__main__':

@@ -9,6 +9,8 @@ import re
 
 import scrapy
 
+from PostCrawl.utils.data_get import GetData
+
 
 class HebeiprovinceecologyenvironmentproSpider(scrapy.Spider):
     name = 'HebeiProvinceEcologyEnvironmentPro'
@@ -55,12 +57,15 @@ class HebeiprovinceecologyenvironmentproSpider(scrapy.Spider):
                 callback=self.parse,
                 meta={
                     "site_path_url": copy.deepcopy(site_path_url),
+                    "site_path_name": copy.deepcopy("公示公告>>建设项目环境影响评价文件审批>（环境影响评价文件受理情况公示 & 环评项目拟批准公示 & 环评项目拟不予批准公示 & 环评项目审批决定公告）建设项目竣工环境保护验收（固废）  验收项目（受理情况公示 & 验收项目拟批准公示 & 验收项目拟不予批准公示 & 验收项目审批决定公告）"),
+                    "site_id": copy.deepcopy("ED81D90050"),
                 }
             )
 
     def parse(self, response, **kwargs):
-        item = {}
+
         for tr in response.css("#table-ex tr"):
+            item = GetData().data_get(response)
             item['title_name'] = tr.css("td a::text").get()
             title_url: str = tr.css("td a::attr(href)").get()
             title_date: str = tr.css("td:nth-child(3)::text").get()

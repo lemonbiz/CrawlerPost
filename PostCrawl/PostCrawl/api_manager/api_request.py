@@ -18,9 +18,9 @@ class APIRequest(object):
     """
     Description: 处理API请求
     """
-    def __init__(self, username='test', password='test.com'):
-        self.user = {"username": username, "password": password }
-        self.header = self.getHeader()
+    def __init__(self,):
+        self.header = {'Authorization': 'token 90818f3750654afdf8d216d8275444ad6ff11f8f',
+                       'Content-Type': 'application/json'}
         self.local_ip = self.getLocalIP()
 
     def getLocalIP(self):
@@ -32,26 +32,7 @@ class APIRequest(object):
             s.close()
         except Exception:
             s.close()
-
         return ip
-
-    def getHeader(self):
-        while True:
-            try:
-                token_url = 'http://mykyls.xyz:38080/api-token-auth/'
-                req = requests.post(token_url, data=self.user)
-                token = req.json().get("token", "")
-                if 200 <= req.status_code < 300:
-                    token = req.json().get("token", "")
-                    header = {'Authorization': 'token %s' % token,
-                              'Content-Type': 'application/json'}
-                    # print("Token pass：", token)
-                    return header
-                else:
-                    print("Token fail: %s, %s" % (req.status_code, str(req.json())))
-            except Exception as e:
-                print('Token error:', str(e))
-            time.sleep(5)
 
     def get(self, url, params={}, timeout=10):
         if "192.168.2" in self.local_ip:
@@ -97,7 +78,6 @@ class APIRequest(object):
         if "192.168.2" in self.local_ip:
             url = url.replace("mykyls.xyz:38080", "192.168.2.31:38080")
         try:
-
             req = requests.put(url, data=json.dumps(data), headers=self.header)
             result = req.json()
             return req.status_code, result
@@ -106,12 +86,11 @@ class APIRequest(object):
             return 400, [str(e)]
 
     def test(self):
-        url = "http://mykyls.xyz:38080/api/spider_nzj_config/"
-        url_params = {
-            "site_id": "D1D6A64E07",
+        url = "http://mykyls.xyz:38080/api/spider_zfbw_config/"
+        url_params = { "site_id": "E26C9F69A5",
         }
         data = self.get(url, url_params)
-        # print(data)
+        print(data)
 
 
 if __name__ == "__main__":

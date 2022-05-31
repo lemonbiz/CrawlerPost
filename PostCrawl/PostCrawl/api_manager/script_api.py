@@ -14,14 +14,15 @@ import socket
 import platform
 import datetime
 
-from .api_request import APIRequest
-from .script_data import SpiderData
+from Currency.api_manager.api_request import APIRequest
+from Currency.api_manager.script_data import SpiderData
 
 
 class APIManager(object):
     def __init__(self):
         self.api_request = APIRequest()
         self.script_data = SpiderData()
+        self.local_info = self.getLocalInfo()
         self.api_url_dict = {
             "spider_nzj_config": "http://mykyls.xyz:38080/api/spider_nzj_config/",
             "spider_nzj_data": "http://mykyls.xyz:38080/api/spider_nzj_data/",
@@ -50,9 +51,9 @@ class APIManager(object):
         hostname = socket.gethostname()
         local_ip = socket.gethostbyname(hostname)
         os_ver = platform.system()
-        local_info.append("运行电脑：%s (%s) %s" % (hostname, local_ip, os_ver))
-        local_info.append("脚本目录：%s" % os.getcwd())
-        local_info.append("脚本时间：%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        local_info.append("：%s (%s) %s" % (hostname, local_ip, os_ver))
+        local_info.append("：%s" % os.getcwd())
+        local_info.append("：%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         return "\n".join(local_info)
 
     def __getConfigData(self, url_params={}, table_name="spider_nzj_config"):
@@ -82,7 +83,7 @@ class APIManager(object):
             'site_id': config_data['site_id'],
             'site_name': config_data['site_name'],
             "run_status": run_status,
-            "run_message": self.getLocalInfo() + "\n运行信息：%s" % run_message,
+            "run_message": self.local_info + "\n运行信息：%s" % run_message,
             "run_time": int(time.time()),
             "update_user": run_user
         }
@@ -208,24 +209,26 @@ class APIManager(object):
 
 if __name__ == "__main__":
     api = APIManager()
-    # url_params = {}
-    # data = api.getConfigNzj(url_params)
+    url_params = { "script_name": "script_qgj", "ordering": "run_time"}
+    data = api.getConfigNzj(url_params)
+    print(data)
     # 正在更新
     data = api.updateConfigNzj(site_id="B4BEBF05C1", run_status="正在更新", run_message="正在更新", run_user="test")
+    print(data)
     # 运行结束
-    # data = api.updateConfigNzj(site_id="B4BEBF05C1", run_status="结束", run_message="结束", run_user="test")
-    # title_data = {
-    #     "title_date": "2022-08-27",
-    #     "title_name": "测试数据",
-    #     "site_id": "123",
-    #     "site_name": "测试数据",
-    #     "title_type": "",
-    #     "title_url": "http://zrzy.hebei.gov.cn/heb/gongk/gkml/gggs/qtgg/zfj/10636259671725203456.html",
-    #     "title_source": "",
-    #     "site_path_name": "公告公示",
-    #     "site_path_url": "http://zrzy.hebei.gov.cn/heb/gongk/gkml/gggs/",
-    #     "content_html": "<html><body><div>测试数据矿2022-01-27</div></body></html>",
-    #     "update_user": "",
-    # }
-    # data = api.addDataToNzjDB(title_data)
-    # print(data)
+    #data = api.updateConfigNzj(site_id="B4BEBF05C1", run_status="结束", run_message="结束", run_user="test")
+    title_data = {
+        "title_date": "2022-08-27",
+        "title_name": "测试数据",
+        "site_id": "123",
+        "site_name": "测试数据",
+        "title_type": "",
+        "title_url": "http://zrzy.hebei.gov.cn/heb/gongk/gkml/gggs/qtgg/zfj/10636259671725203456.html",
+        "title_source": "",
+        "site_path_name": "公告公示",
+        "site_path_url": "http://zrzy.hebei.gov.cn/heb/gongk/gkml/gggs/",
+        "content_html": "<html><body><div>测试数据矿2022-01-27</div></body></html>",
+        "update_user": "",
+    }
+    data = api.addDataToNzjDB(title_data)
+    print(data)

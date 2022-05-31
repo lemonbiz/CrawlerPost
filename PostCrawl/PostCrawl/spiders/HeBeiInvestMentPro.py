@@ -18,11 +18,11 @@ class HebeiinvestmentproSpider(scrapy.Spider):
     ]
 
     def start_requests(self):
-        for i in range(1):
+        for i in range(1,2):
             channelID = '402881da5215a653015215be1eea033f'
             yield from self.handle_request(self.parse_pt,channelID, i, self.start_urls[0], site_id="6C0F5C9316",site_path_name="首页 > 政策法规")
 
-        for i in range(1):
+        for i in range(1,2):
             channelID = 'A8FE5F40FFFFFFFFEB4F9270FFFFFFBF'
             yield from self.handle_request(self.parse,channelID, i, self.start_urls[1], site_id="9266C683CF",site_path_name="首页 > 平台动态")
 

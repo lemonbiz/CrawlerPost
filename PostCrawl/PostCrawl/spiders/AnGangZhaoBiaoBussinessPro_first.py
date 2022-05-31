@@ -17,7 +17,6 @@ class AngangzhaobiaobussinessproFirstSpider(scrapy.Spider):
     name = 'AnGangZhaoBiaoBussinessPro_first'
     # allowed_domains = ['xxx.com']
     start_urls = [
-
         'https://bid.ansteelscm.com/cpu-angang-bid-fe/portalcas.html#/pages/supply_workbench/listmore?purchaseType=1&noticeType=23',
         'https://bid.ansteelscm.com/cpu-angang-bid-fe/portalcas.html#/pages/supply_workbench/listmore?purchaseType=2&noticeType=23',
         'https://bid.ansteelscm.com/cpu-angang-bid-fe/portalcas.html#/pages/supply_workbench/listmore?purchaseType=3&noticeType=23',

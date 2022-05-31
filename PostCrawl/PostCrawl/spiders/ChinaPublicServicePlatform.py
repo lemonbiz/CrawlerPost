@@ -43,23 +43,23 @@ class ChinapublicserviceplatformSpider(scrapy.Spider):
 
         url_list_1 = [
             "https://bulletin.cebpubservice.com/xxfbcmses/search/change.html?searchDate=1997-04-02&dates=300&word=&categoryId=89&industryName=&area=&status=&publishMedia=&sourceInfo=&showStatus=&page={}".format(
-                i) for i in range(1, 400)]
+                i) for i in range(1, 100)]
 
         url_list_2 = [
             "https://bulletin.cebpubservice.com/xxfbcmses/search/result.html?searchDate=1997-04-02&dates=300&word=&categoryId=90&industryName=&area=&status=&publishMedia=&sourceInfo=&showStatus=&page={}".format(
-                i) for i in range(1, 10)]
+                i) for i in range(1, 100)]
 
         url_list_3 = [
             "https://bulletin.cebpubservice.com/xxfbcmses/search/candidate.html?searchDate=1997-04-02&dates=300&word=&categoryId=91&industryName=&area=&status=&publishMedia=&sourceInfo=&showStatus=&page={}".format(
-                i) for i in range(1, 10)]
+                i) for i in range(1, 100)]
 
         url_list_4 = [
             "https://bulletin.cebpubservice.com/xxfbcmses/search/qualify.html?searchDate=1997-04-02&dates=300&word=&categoryId=92&industryName=&area=&status=&publishMedia=&sourceInfo=&showStatus=&page={}".format(
-                i) for i in range(1, 10)]
+                i) for i in range(1, 100)]
 
         url_list_5 = [
             "https://bulletin.cebpubservice.com/xxfbcmses/search/bulletin.html?searchDate=1997-04-02&dates=300&word=&categoryId=88&industryName=&area=&status=&publishMedia=&sourceInfo=&showStatus=&page={}".format(
-                i) for i in range(1, 10)]
+                i) for i in range(1, 100)]
 
         yield from self.handle_request(cookies, url_list_1, self.start_urls[0], site_path_name="更正公告公示",
                                        site_id="0F743A7AF1")  # change

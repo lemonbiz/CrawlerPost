@@ -21,12 +21,12 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
     # allowed_domains = ['xxx.com']
     start_urls = [
         'http://www.shanxitzxm.gov.cn/tzxmweb/pages/home/approvalResult/recordquery.jsp',
+        # 批复公告
         'http://www.shanxitzxm.gov.cn/portalopenPublicInformation.do?method=queryExamineAll',
-        'http://www.shanxitzxm.gov.cn/tzxmweb/pages/home/approvalResult/historyProjectQuerySx.jsp',
     ]
 
     def start_requests(self):
-        for i in range(1, 2):
+        for i in range(1, 20):
             yield scrapy.FormRequest(
                 url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=recordquery",
                 formdata={
@@ -40,7 +40,7 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
                 }
             )
 
-        for i in range(1, 2):
+        for i in range(1, 10):
             yield scrapy.FormRequest(
                 url="http://www.shanxitzxm.gov.cn/portalopenPublicInformation.do?method=queryExamineAll",
                 formdata={
@@ -54,23 +54,6 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
                     "site_id": copy.deepcopy("4ED6C2220E"),
                 }
             )
-
-
-        # for i in range(10, 500):
-        #     yield scrapy.FormRequest(
-        #         url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=historyProjectQuerySx",
-        #         formdata={
-        #             "condition": "",
-        #             "pageNo": str(i),
-        #         },
-        #         callback=self.parse2,
-        #         meta={
-        #             "site_path_url": copy.deepcopy(self.start_urls[2]),
-        #             "site_id": copy.deepcopy("CDBA3B3C0C"),
-        #
-        #         }
-        #     )
-
 
     def parse(self, response, **kwargs):
         """
@@ -121,12 +104,16 @@ class ShanaxiinvestonlineproSpider(scrapy.Spider):
             item['site_id'] = response.meta.get('site_id')
 
             try:
-                item['title_url'] = re.findall("queryRecordContent\('(.*)',''\)", str(item['title_url']))[0]
+                projectuuid = re.findall("queryRecordContent\('(.*)',''\)", str(item['title_url']))
+
+                if projectuuid is []:
+                    continue
+                projectuuid=projectuuid[0]
 
                 yield scrapy.FormRequest(
                     url="http://www.shanxitzxm.gov.cn/portalopenapprovalResult.do?method=recordContentQuery",
                     formdata={
-                        "projectuuid": item['title_url']
+                        "projectuuid": projectuuid
                     },
                     callback=self.parse_detail,
                     meta={
