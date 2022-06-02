@@ -25,50 +25,51 @@ class AngangzhaobiaobussinessproSecondSpider(scrapy.Spider):
     ]
 
     def start_requests(self):
-        yield JsonRequest(
-            url="https://bid.ansteelscm.com/notice/pjtnotice/getPjtByPurchaseType",
-            data={
-                "idProjectCode": "",
-                "bidProjectName": "",
-                "consignorContactPersonName": "",
-                "consignorEnterpriseName": "",
-                "deadline": "",
-                "noticeType": "20",
-                "pageNum": "1",
-                "pageSize": "50",
-                "pmName": "",
-                "publishStartTime": "",
-                "publishTime": "",
-                "purOrgName": "",
-                "purchaseType": "",
-                "qualifyCheckType": "",
-                "startTime": "",
-            },
-            callback=self.parse,
-            meta={
-                "site_path_url": deepcopy(self.start_urls[0]),
-                'site_id':deepcopy("3973587172")
-            }
-        )
+        for i in range(50):
+            yield JsonRequest(
+                url="https://bid.ansteelscm.com/notice/pjtnotice/getPjtByPurchaseType",
+                data={
+                    "idProjectCode": "",
+                    "bidProjectName": "",
+                    "consignorContactPersonName": "",
+                    "consignorEnterpriseName": "",
+                    "deadline": "",
+                    "noticeType": "20",
+                    "pageNum": "1",
+                    "pageSize": "10",
+                    "pmName": "",
+                    "publishStartTime": "",
+                    "publishTime": "",
+                    "purOrgName": "",
+                    "purchaseType": "",
+                    "qualifyCheckType": "",
+                    "startTime": "",
+                },
+                callback=self.parse,
+                meta={
+                    "site_path_url": deepcopy(self.start_urls[0]),
+                    'site_id':deepcopy("3973587172")
+                }
+            )
+        for i in range(50):
+            yield JsonRequest(
+                url="https://bid.ansteelscm.com/notice/repository/queryRepositoryPage",
+                data={
+                    "messageHeader": "",
+                    "messageTimeBegin": "",
+                    "messageTimeOver": "",
+                    "organization": "",
+                    "pageNum": str(i),
+                    "pageSize": "10",
+                    "placeTheColumn": "寻源公告",
+                },
+                callback=self.parse_source,
+                meta={
+                    "site_path_url":deepcopy(self.start_urls[1]),
+                    'site_id': deepcopy("EE2CB2A9DA")
+                }
 
-        yield JsonRequest(
-            url="https://bid.ansteelscm.com/notice/repository/queryRepositoryPage",
-            data={
-                "messageHeader": "",
-                "messageTimeBegin": "",
-                "messageTimeOver": "",
-                "organization": "",
-                "pageNum": "0",
-                "pageSize": "50",
-                "placeTheColumn": "寻源公告",
-            },
-            callback=self.parse_source,
-            meta={
-                "site_path_url":deepcopy(self.start_urls[1]),
-                'site_id': deepcopy("EE2CB2A9DA")
-            }
-
-        )
+            )
 
 
     def parse(self, response, **kwargs):

@@ -113,3 +113,9 @@ COMMANDS_MODULE = "PostCrawl.commands"
 
 
 DOWNLOAD_FAIL_ON_DATALOSS = False
+
+
+
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': None,
+}

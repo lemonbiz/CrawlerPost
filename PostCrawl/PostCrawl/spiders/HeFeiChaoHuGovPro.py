@@ -9,7 +9,13 @@ from PostCrawl.utils.data_get import GetData
 class HefeichaohugovproSpider(scrapy.Spider):
     name = 'HeFeiChaoHuGovPro'
     # allowed_domains = ['']
-    start_urls = ['https://zwgk.hefei.gov.cn/public/column/14081?type=4&catId=7001011&action=list']
+    start_urls = [
+        'https://zwgk.hefei.gov.cn/public/column/14081?type=4&catId=7001011&action=list',
+        "https://zwgk.hefei.gov.cn/public/column/13731?type=4&action=list&nav=3&sub=&catId=7003771",
+        'https://www.chaohu.gov.cn/public/column/13961?type=4&catId=6999451&action=list',
+
+
+                  ]
 
     lua = """
            function main(splash, args)
@@ -34,6 +40,12 @@ class HefeichaohugovproSpider(scrapy.Spider):
             "https://zwgk.hefei.gov.cn/public/column/13731?type=4&action=list&nav=3&sub=&catId=7003771",
             "您当前所在位置：首页 > 信息公开 > 巢湖市人民政府（政府办公室） > 重大建设项目批准和实施 > 批准结果信息",
             "F24ECF1431",
+        )
+
+        yield from self.handle_request(
+            "https://www.chaohu.gov.cn/public/column/13961?type=4&catId=6999451&action=list",
+            "首页 > 信息公开 > 巢湖市生态环境分局 > 社会公益事业建设 > 环境保护 > 建设项目环境影响评价审批",
+            "1E30BD775B",
         )
 
     def handle_request(self,url,site_path_name,site_id):

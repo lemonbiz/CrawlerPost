@@ -14,8 +14,8 @@ import socket
 import platform
 import datetime
 
-from Currency.api_manager.api_request import APIRequest
-from Currency.api_manager.script_data import SpiderData
+from .api_request import APIRequest
+from .script_data import SpiderData
 
 
 class APIManager(object):
@@ -51,9 +51,9 @@ class APIManager(object):
         hostname = socket.gethostname()
         local_ip = socket.gethostbyname(hostname)
         os_ver = platform.system()
-        local_info.append("：%s (%s) %s" % (hostname, local_ip, os_ver))
-        local_info.append("：%s" % os.getcwd())
-        local_info.append("：%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        local_info.append("%s (%s) %s" % (hostname, local_ip, os_ver))
+        local_info.append("%s" % os.getcwd())
+        local_info.append("%s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         return "\n".join(local_info)
 
     def __getConfigData(self, url_params={}, table_name="spider_nzj_config"):

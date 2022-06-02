@@ -17,3 +17,16 @@ class Command(ScrapyCommand):
         for name in spider_list:
             self.crawler_process.crawl(name, **opts.__dict__)
         self.crawler_process.start()
+
+def run():
+    from scrapy import cmdline
+
+    cmdline.execute(['scrapy', 'crawlall'])
+
+
+if __name__ == '__main__':
+    from apscheduler.schedulers.blocking import BlockingScheduler
+
+    sched = BlockingScheduler()
+    sched.add_job(run(), 'interval', days=1)
+    sched.start()

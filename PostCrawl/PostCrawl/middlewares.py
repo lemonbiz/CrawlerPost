@@ -2,7 +2,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
+import faker as faker
 from scrapy import signals
 
 # useful for handling different item types with a single interface
@@ -72,7 +72,6 @@ class PostcrawlDownloaderMiddleware:
         # 'http': 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020',
 
         # request.meta['proxy'] = 'http://H884Y26940NA13ND:3B8B6ACDE5871EFA@http-dyn.abuyun.com:9020'
-        #
         return
 
     def process_response(self, request, response, spider):

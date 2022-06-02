@@ -16,7 +16,7 @@ import socket
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup, Comment
 
-from Currency.api_manager.keywords import keywords_valid, keywords_search
+from .keywords import keywords_valid, keywords_search
 
 
 class SpiderData(object):
